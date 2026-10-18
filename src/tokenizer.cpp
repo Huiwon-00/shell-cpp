@@ -1,23 +1,23 @@
 #include "tokenizer.h"
 
-std::vector<std::string> tokenize(const std::string& command, const char spliter){
+std::vector<Token> tokenize(const std::string& command, const char spliter){
   int QuoteStatus = 0;
-  std::vector<std::string> arguments;
-  std::string arg;
+  std::vector<Token> Tokens;
+  Token t;
 
   for(size_t i = 0; i < command.length(); i++){
     if(command[i] == '\\'){
       if(QuoteStatus == 0 && i + 1 < command.length()){
         i++;
-        arg.push_back(command[i]);
+        t.text.push_back(command[i]);
       }
       else{
         if((command[i + 1] == '\\'|| command[i + 1] == '"') && QuoteStatus == 2){
           i++;
-          arg.push_back(command[i]);
+          t.text.push_back(command[i]);
         }
         else{
-          arg.push_back(command[i]);
+          t.text.push_back(command[i]);
         }
       }
     }
@@ -26,7 +26,7 @@ std::vector<std::string> tokenize(const std::string& command, const char spliter
         QuoteStatus = 0;
       }
       else if(QuoteStatus == 2){
-        arg.push_back(command[i]);
+        t.text.push_back(command[i]);
       }
       else{
         QuoteStatus = 1;
@@ -37,26 +37,26 @@ std::vector<std::string> tokenize(const std::string& command, const char spliter
         QuoteStatus = 0;
       }
       else if(QuoteStatus == 1){
-        arg.push_back(command[i]);
+        t.text.push_back(command[i]);
       }
       else{
         QuoteStatus = 2;
       }
     }
     else if(QuoteStatus == 1 || QuoteStatus == 2){
-      arg.push_back(command[i]);
+      t.text.push_back(command[i]);
     }
     else if(command[i] == spliter){
-      if(!arg.empty()){
-        arguments.push_back(arg);
-        arg.clear();
+      if(!t.text.empty()){
+        Tokens.push_back(t);
+        t.text.clear();
       }
     }
     else{
-      arg.push_back(command[i]);
+      t.text.push_back(command[i]);
     }
   }
-  if(!arg.empty()) arguments.push_back(arg);
+  if(!t.text.empty()) Tokens.push_back(t);
 
-  return arguments;
+  return Tokens;
 }
