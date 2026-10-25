@@ -2,10 +2,6 @@
 #include <string>
 #include <vector>
 
-struct Token {
-    std::string text;    
-    bool quoted;         
-};
 
 enum class TokenType {
     Word,
@@ -16,4 +12,9 @@ enum class TokenType {
     AppendErr,      // 2>>
 };
 
-std::vector<std::string> tokenize(const std::string& command, const char spliter);
+struct Token {
+    TokenType type = TokenType::Word;    
+    std::string text;         
+};
+
+std::vector<Token> tokenize(const std::string& command);
