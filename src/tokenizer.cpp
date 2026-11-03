@@ -110,3 +110,25 @@ std::vector<Token> tokenize(const std::string& command){
 
   return Tokens;  
 }
+
+std::vector<std::string> split_path(const std::string& file_path){
+  std::string path = "";
+  std::vector<std::string> paths;
+
+  for(size_t i = 0; i < file_path.length(); i++){
+    if(file_path[i] != ':'){
+      path+= file_path[i];
+    }
+    else{
+      if(!path.empty()){
+        paths.push_back(path);
+        path = "";
+      }
+    }
+  }
+  if(!path.empty()){
+    paths.push_back(path);
+  }
+  return paths;
+}
+

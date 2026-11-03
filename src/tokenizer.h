@@ -18,3 +18,4 @@ struct Token {
 };
 
 std::vector<Token> tokenize(const std::string& command);
+std::vector<std::string> split_path(const std::string& file_path);
