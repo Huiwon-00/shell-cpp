@@ -2,6 +2,7 @@
 #include "redirect.h"
 #include "pipeline.h"
 #include "tokenizer.h"
+#include "parser.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -9,6 +10,7 @@
 #include <filesystem>
 #include <cstdlib>
 
+using Pipeline = std::vector<Command>;
 namespace fs = std::filesystem;
 
 int main()
@@ -16,22 +18,43 @@ int main()
   // Flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
-  std::string command;
+
   std::unordered_set<std::string> builtins = {"exit", "echo", "type", "pwd", "cd"};
+  Pipeline pipeline;
+
   const char* path_env {std::getenv("PATH")};
   std::string filepath{path_env ? path_env : ""};
-
-  std::vector<std::string> paths = tokenize(filepath, ':');
+  std::vector<std::string> paths = split_path(filepath);
   std::string current_directory = std::filesystem::current_path().string();
+
+  std::string command;
 
   while (true)
   {
     std::cout << "$ ";
     if (!std::getline(std::cin, command))
       break;
-    std::vector<std::string> arguments = tokenize(command, ' ');
-    if (arguments.empty())
+    std::vector<Token> tokens = tokenize(command);
+    if ( tokens.empty() || !parse(tokens, pipeline) )
       continue;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     if(check_pipeline(arguments)){
       pipeline(arguments, paths, builtins, current_directory);
     }
