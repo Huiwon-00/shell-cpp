@@ -26,8 +26,6 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
                 if(i + 1 < tokens.size()){
                     if(tokens[i + 1].type == TokenType::Word){
                         command.stdout_file = tokens[i + 1].text;
-                        out.push_back(command);
-                        command = Command{};
                         i++;
                     }
                     else{
@@ -44,8 +42,6 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
                 if(i + 1 < tokens.size()){
                     if(tokens[i + 1].type == TokenType::Word){
                         command.stderr_file = tokens[i + 1].text;
-                        out.push_back(command);
-                        command = Command{};
                         i++;
                     }
                     else{
@@ -63,8 +59,8 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
                     if(tokens[i + 1].type == TokenType::Word){
                         command.stdout_file = tokens[i + 1].text;
                         command.append_stdout = true;
-                        out.push_back(command);
-                        command = Command{};
+                        //out.push_back(command);
+                        //command = Command{};
                         i++;
                     }
                     else{
@@ -82,8 +78,8 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
                     if(tokens[i + 1].type == TokenType::Word){
                         command.stderr_file = tokens[i + 1].text;
                         command.append_stderr = true;
-                        out.push_back(command);
-                        command = Command{};
+                        //out.push_back(command);
+                        //command = Command{};
                         i++;
                     }
                     else{
@@ -98,4 +94,8 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
                 break;
         }
     }
+    if(command.args.size() != 0){
+        out.push_back(command);
+    }
+    return true;
 }

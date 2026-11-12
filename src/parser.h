@@ -15,4 +15,4 @@ struct Command{
 
 using Pipeline = std::vector<Command>;
 
-bool parse(std::vector<Token> Tokens, Pipeline& out);
+bool parse(std::vector<Token>& tokens, Pipeline& out);

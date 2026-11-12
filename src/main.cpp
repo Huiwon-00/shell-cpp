@@ -37,65 +37,7 @@ int main()
     std::vector<Token> tokens = tokenize(command);
     if ( tokens.empty() || !parse(tokens, pipeline) )
       continue;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    if(check_pipeline(arguments)){
-      pipeline(arguments, paths, builtins, current_directory);
-    }
-    else{
-      auto [redirectType, file] = remove_redirect_sign(arguments);
-      int restore_fd = -2;
-      if(!file.empty()){
-        if(builtins.contains(arguments[0])){
-          if(redirectType == 1){
-            restore_fd= R_stdout(file);
-          }
-          else if(redirectType == 2){
-            restore_fd = R_stderr(file);
-          }
-          else if(redirectType == 3){
-            restore_fd = R_append(file);
-          }
-          else if(redirectType == 4){
-            restore_fd = R_append_stderr(file);
-          }
-        }
-      }
-      if(restore_fd == -1){
-        continue;
-      }
-      if (arguments[0] == "exit")
-        break;
-      else if (arguments[0] == "echo")
-        echo(arguments);
-      else if (arguments[0] == "pwd")
-        pwd(current_directory);
-      else if (arguments[0] == "cd")
-        cd(arguments, current_directory);
-      else if (arguments[0] == "type")
-        type(arguments, paths, builtins);
-      else
-        executable(redirectType, arguments, paths, file);
-      if(restore_fd!= -2){
-        restore(restore_fd, redirectType);
-      }
-    }
+    pipelines(pipeline, paths, builtins, current_directory);
   }
 }
 

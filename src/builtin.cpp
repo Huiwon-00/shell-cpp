@@ -1,5 +1,6 @@
 #include "builtin.h"
 #include "redirect.h"
+#include "parser.h"
 #include <iostream>
 #include <filesystem>
 #include <cstdlib>
@@ -82,14 +83,13 @@ void type(const std::vector<std::string>& arguments, const std::vector<std::stri
     }
 }
 
-void executable(int redirectType, std::vector<std::string>& arguments, 
-  const std::vector<std::string>& paths, const std::string& file){
-  std::string exCommand = arguments[0];
+void executable(Command c, const std::vector<std::string>& paths){
+  std::string exCommand = c.args[0];
   std::string fullpath = find_external_file_path(exCommand, paths);
 
   if(!fullpath.empty()){
     std::vector<char*> arguments_c;
-    for(std::string& s: arguments){
+    for(std::string& s: c.args){
       arguments_c.push_back(s.data());
     }
     arguments_c.push_back(nullptr);
@@ -99,20 +99,8 @@ void executable(int redirectType, std::vector<std::string>& arguments,
         return;
     }
     if(pid == 0){
-      int redirectOk = 0;
-      if(!file.empty()){
-        if(redirectType == 1)
-          redirectOk = R_stdout(file);
-        else if(redirectType == 2)
-          redirectOk = R_stderr(file);
-        else if(redirectType == 3){
-          redirectOk = R_append(file);
-        }
-        else if(redirectType == 4){
-          redirectOk = R_append_stderr(file);
-        }
-      }
-      if(redirectOk == -1)
+      auto [stdout_fd, stderr_fd] = Redirect(c.stdout_file, c.stderr_file,c.append_stdout, c.append_stderr);
+      if(stdout_fd == -2 && stderr_fd == -2)
         std::exit(1);
       int execvErr {0};
       execvErr = execv(fullpath.c_str(), arguments_c.data());
@@ -126,7 +114,7 @@ void executable(int redirectType, std::vector<std::string>& arguments,
     }
   }
   else{
-    std::cerr << arguments[0] << ": command not found" << std::endl;
+    std::cerr << c.args[0] << ": command not found" << std::endl;
   }
 }
 

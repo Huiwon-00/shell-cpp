@@ -3,9 +3,9 @@
 #include <vector>
 #include <utility>
 
-int R_stdout(const std::string& file);
-int R_stderr(const std::string& file);
-int R_append(const std::string& file);
-int R_append_stderr(const std::string& file);
-void restore(int restore_fd, int redirectType);
-std::pair<int, std::string> remove_redirect_sign(std::vector<std::string>& arguments);
+bool fdHasError(const int& fd, const std::string& file);
+std::pair<int, int> Redirect(const std::string& stdout_file, const std::string& stderr_file,
+    const bool& append_stdout, const bool& append_stderr);
+int R_stdout(const std::string& file, const bool& append_stdout );
+int R_stderr(const std::string& file, const bool& append_stderr);
+void restore(const int& stdout_restore_fd, const int& stderr_restore_fd);
