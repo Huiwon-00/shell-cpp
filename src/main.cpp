@@ -36,10 +36,28 @@ int main()
     std::vector<Token> tokens = tokenize(command);
     if ( tokens.empty() || !parse(tokens, pipeline) )
       continue;
-    if(pipeline.size() == 1 && pipeline[0].args[0] == "exit"){
-      break;
+
+    if(pipeline.size() == 1){
+      if(builtins.contains(pipeline[0].args[0])){
+        const std::string name = pipeline[0].args[0];
+        if (name == "echo")
+            echo(pipeline[0].args);
+        else if (name == "pwd")
+            pwd(current_directory);
+        else if (name == "cd")
+            cd(pipeline[0].args, current_directory);
+        else if(name == "type")
+            type(pipeline[0].args, paths, builtins);
+        else
+          break;
+      }
+      else{
+        executable(pipeline[0], paths);
+      }
     }
-    pipelines(pipeline, paths, builtins, current_directory);
+    else{
+      pipelines(pipeline, paths, builtins, current_directory);
+    }
     pipeline = {};
   }
 }
