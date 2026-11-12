@@ -28,7 +28,7 @@ void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
         }
         if(pid == 0){
             if(pipeline.size() == 1){
-
+                //skip
             }
             else if(i == 0){
                 if(dup2(fds[1], STDOUT_FILENO) == -1){
