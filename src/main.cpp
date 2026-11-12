@@ -10,7 +10,6 @@
 #include <filesystem>
 #include <cstdlib>
 
-using Pipeline = std::vector<Command>;
 namespace fs = std::filesystem;
 
 int main()
@@ -37,7 +36,11 @@ int main()
     std::vector<Token> tokens = tokenize(command);
     if ( tokens.empty() || !parse(tokens, pipeline) )
       continue;
+    if(pipeline.size() == 1 && pipeline[0].args[0] == "exit"){
+      break;
+    }
     pipelines(pipeline, paths, builtins, current_directory);
+    pipeline = {};
   }
 }
 

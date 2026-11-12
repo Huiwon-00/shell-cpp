@@ -1,6 +1,5 @@
 #include "builtin.h"
 #include "redirect.h"
-#include "parser.h"
 #include <iostream>
 #include <filesystem>
 #include <cstdlib>

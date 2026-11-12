@@ -1,8 +1,9 @@
 #pragma once
+#include "command.h"
 #include <string>
 #include <vector>
 #include <unordered_set>
-#include "parser.h"
+
 
 void echo(const std::vector<std::string>& arguments);
 void pwd(const std::string& current_directory);

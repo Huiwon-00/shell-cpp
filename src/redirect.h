@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <vector>
 #include <utility>
 
 bool fdHasError(const int& fd, const std::string& file);

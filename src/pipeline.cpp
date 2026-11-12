@@ -1,6 +1,5 @@
 #include "pipeline.h"
 #include "builtin.h"
-#include "parser.h"
 #include <iostream>
 #include <cstdlib>
 #include <sys/wait.h>
@@ -28,7 +27,10 @@ void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
             return;
         }
         if(pid == 0){
-            if(i == 0){
+            if(pipeline.size() == 1){
+
+            }
+            else if(i == 0){
                 if(dup2(fds[1], STDOUT_FILENO) == -1){
                     perror("dup2 failed to redirect");
                     std::exit(1);
@@ -80,7 +82,7 @@ void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
                     pwd(current_directory);
                 else if (pipeline[i].args[0] == "cd")
                     cd(pipeline[i].args, current_directory);
-                else if (pipeline[i].args[0] == "type")
+                else
                     type(pipeline[i].args, paths, builtins);
             }
             std::exit(1);
