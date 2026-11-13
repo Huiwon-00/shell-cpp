@@ -41,8 +41,8 @@ void cd(const std::vector<std::string>& arguments, std::string& current_director
     }
     catch(const std::filesystem::filesystem_error& e){
       std::cerr << "Error: " << e.what() << "\n";
-      return;
-    }   
+    }
+    return;   
   }
 
   try{
