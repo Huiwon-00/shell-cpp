@@ -46,11 +46,11 @@ int R_stderr(const std::string& file, const bool& append_stderr){
 }
 
 void restore(const int& stdout_restore_fd, const int& stderr_restore_fd){
-    if(stdout_restore_fd != -1){
+    if(stdout_restore_fd != -1 && stdout_restore_fd != -2){
         dup2(stdout_restore_fd, 1);
         close(stdout_restore_fd);
     }
-    if(stderr_restore_fd != -1){
+    if(stderr_restore_fd != -1 && stderr_restore_fd != -2){
         dup2(stderr_restore_fd, 2);
         close(stderr_restore_fd);
     }

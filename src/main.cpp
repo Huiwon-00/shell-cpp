@@ -39,6 +39,13 @@ int main()
 
     if(pipeline.size() == 1){
       if(builtins.contains(pipeline[0].args[0])){
+        Command c = pipeline[0];
+        auto [stdout_fd, stderr_fd] = Redirect(c.stdout_file, c.stderr_file,c.append_stdout, c.append_stderr);
+        if(stdout_fd == -2 || stderr_fd == -2){
+          restore(stdout_fd, stderr_fd);
+          pipeline = {};
+          continue;
+        }
         const std::string name = pipeline[0].args[0];
         if (name == "echo")
             echo(pipeline[0].args);
@@ -48,7 +55,8 @@ int main()
             cd(pipeline[0].args, current_directory);
         else if(name == "type")
             type(pipeline[0].args, paths, builtins);
-        else
+        restore(stdout_fd, stderr_fd);
+        if(name == "exit")
           break;
       }
       else{

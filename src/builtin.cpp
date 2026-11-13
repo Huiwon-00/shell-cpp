@@ -7,24 +7,24 @@
 #include <unistd.h>
 
 void echo(const std::vector<std::string>& arguments){
-    if(arguments.size() > 1) {
-        for(size_t i = 1; i < arguments.size(); i++){
-          if(i != arguments.size() - 1){
-              std::cout << arguments[i] << " ";
-          }
-          else{
-            std::cout << arguments[i] << std::endl;
-          }
-        }
+  if(arguments.size() > 1) {
+    for(size_t i = 1; i < arguments.size(); i++){
+      if(i != arguments.size() - 1){
+          std::cout << arguments[i] << " ";
       }
       else{
-        std::cout << std::endl;
-        return;
+        std::cout << arguments[i] << std::endl;
       }
+    }
+  }
+  else{
+    std::cout << std::endl;
+    return;
+  }
 }
 
 void pwd(const std::string& current_directory){
-    std::cout << current_directory << std::endl;
+  std::cout << current_directory << std::endl;
 }
 
 void cd(const std::vector<std::string>& arguments, std::string& current_directory){
@@ -82,7 +82,7 @@ void type(const std::vector<std::string>& arguments, const std::vector<std::stri
     }
 }
 
-void executable(Command c, const std::vector<std::string>& paths){
+void executable(Command& c, const std::vector<std::string>& paths){
   std::string exCommand = c.args[0];
   std::string fullpath = find_external_file_path(exCommand, paths);
 
@@ -99,7 +99,7 @@ void executable(Command c, const std::vector<std::string>& paths){
     }
     if(pid == 0){
       auto [stdout_fd, stderr_fd] = Redirect(c.stdout_file, c.stderr_file,c.append_stdout, c.append_stderr);
-      if(stdout_fd == -2 && stderr_fd == -2)
+      if(stdout_fd == -2 || stderr_fd == -2)
         std::exit(1);
       int execvErr {0};
       execvErr = execv(fullpath.c_str(), arguments_c.data());

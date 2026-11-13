@@ -1,11 +1,12 @@
 #include "pipeline.h"
 #include "builtin.h"
+#include "redirect.h"
 #include <iostream>
 #include <cstdlib>
 #include <sys/wait.h>
 #include <unistd.h>
 
-void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
+void pipelines(Pipeline& pipeline, const std::vector<std::string>& paths,
     const std::unordered_set<std::string>& builtins, std::string& current_directory){
     std::vector<char*> arguments_c;
     std::vector<int> PIDs;
@@ -59,9 +60,13 @@ void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
                 close(fds[0]);
             }
             if(!builtins.contains(pipeline[i].args[0])){
+                Command c = pipeline[i];    
+                auto [stdout_fd, stderr_fd] = Redirect(c.stdout_file, c.stderr_file,c.append_stdout, c.append_stderr);
+                if(stdout_fd == -2 || stderr_fd == -2)
+                    std::exit(1);
                 std::string fullpath = find_external_file_path(pipeline[i].args[0], paths);
                 if(!fullpath.empty()){
-                    for(std::string s: pipeline[i].args){
+                    for(std::string& s: pipeline[i].args){
                         arguments_c.push_back(s.data());
                     }
                     arguments_c.push_back(nullptr);
@@ -76,6 +81,10 @@ void pipelines(const Pipeline& pipeline, const std::vector<std::string>& paths,
                 }
             }
             else{
+                Command c = pipeline[i];
+                auto [stdout_fd, stderr_fd] = Redirect(c.stdout_file, c.stderr_file,c.append_stdout, c.append_stderr);
+                if(stdout_fd == -2 || stderr_fd == -2)
+                    std::exit(1);
                 if (pipeline[i].args[0] == "echo")
                     echo(pipeline[i].args);
                 else if (pipeline[i].args[0] == "pwd")

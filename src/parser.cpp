@@ -13,7 +13,7 @@ bool parse(std::vector<Token>& tokens, Pipeline& out){
 
                 break;
             case TokenType::Pipe:
-                if(!command.args.empty()){
+                if(!command.args.empty() && i + 1 < tokens.size()){
                     out.push_back(command);
                     command = Command{};
                 }
